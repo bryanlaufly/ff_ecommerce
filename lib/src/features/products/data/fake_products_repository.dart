@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:ecommerce_app/src/constants/test_products.dart';
 import 'package:ecommerce_app/src/features/products/domain/product.dart';
+import 'package:ecommerce_app/src/utils/delay.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,37 +10,55 @@ class FakeProductsRepository {
   // FakeProductsRepository._();
 
   // static FakeProductsRepository instance = FakeProductsRepository._();
-  final List<Product> _fakeProducts = kTestProducts;
+  FakeProductsRepository({this.addDelay = true});
+
+  final List<Product> _products = kTestProducts;
+  final bool addDelay;
 
   List<Product> getProductsList() {
-    return _fakeProducts;
+    return _products;
   }
 
-  Product? getProduct(String? id) {
-    try {
-      return _fakeProducts.firstWhere((product) => product.id == id);
-    } catch (e) {
-      return null;
-    }
+  Product? getProduct(String id) {
+    // try {
+    //   return _fakeProducts.firstWhere((product) => product.id == id);
+    // } catch (e) {
+    //   return null;
+    // }
+    return _getProduct(_products, id);
   }
+  
 
   Future <List<Product>> fetchProductsList() async {
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
+    delay(addDelay);
     // for testing purpose
     // throw Exception('error');
-    return Future.value(_fakeProducts);
+    return Future.value(_products);
   }
 
   Stream <List<Product>> watchProductsList() async* {
-    await Future.delayed(const Duration(seconds: 2));
-    yield _fakeProducts;
+    // await Future.delayed(const Duration(seconds: 2));
+    delay(addDelay);
+    yield _products;
     // return Stream.value(_fakeProducts);
   }
 
-  Stream <Product> watchProduct(String? id) {
+  Stream <Product?> watchProduct(String id) {
+    // return watchProductsList().map((products) {
+    //   return products.firstWhere((product) => product.id == id);
+    // });
     return watchProductsList().map((products) {
-      return products.firstWhere((product) => product.id == id);
+        return _getProduct(products, id);
     });
+  }
+
+  static Product? _getProduct(List<Product> products, String id) {
+    try {
+      return products.firstWhere((product) => product.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 
 }

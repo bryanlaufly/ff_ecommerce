@@ -23,4 +23,33 @@ class Product {
   final int availableQuantity;
   final double avgRating;
   final int numRatings;
+
+  @override
+  String toString() => 'Product(id: $id, imageUrl: $imageUrl, title: $title, description: $description, price: $price, availableQuantity: $availableQuantity, avgRating: $avgRating, numRatings: $numRatings)';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Product &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          imageUrl == other.imageUrl &&
+          title == other.title &&
+          description == other.description &&
+          price == other.price &&
+          availableQuantity == other.availableQuantity &&
+          avgRating == other.avgRating &&
+          numRatings == other.numRatings;
+
+  @override
+  int get hashCode => Object.hash(
+        id,
+        imageUrl,
+        title,
+        description,
+        price,
+        availableQuantity,
+        avgRating,
+        numRatings,
+      );
 }
