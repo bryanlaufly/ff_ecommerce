@@ -15,7 +15,9 @@ void main() {
   group('FakeAuthRepository', () {
     test('current user is null', () {
       final authRepository = makeAuthRepository();
-      // addTearDown(authRepository.dispose);
+
+      // register the dispose method to be called after test completes, regardless test passes or fails
+      addTearDown(authRepository.dispose);
       expect(authRepository.currentUser, null);
       expect(authRepository.authStateChanges(), emits(null));
     });
@@ -23,7 +25,7 @@ void main() {
 
     test('current user is not null after sign in', () async {
       final authRepository = makeAuthRepository();
-      // addTearDown(authRepository.dispose);
+      addTearDown(authRepository.dispose);
       await authRepository.signInWithEmailAndPassword(testEmail, testPassword);
       
       expect(authRepository.currentUser, testUser);
@@ -32,7 +34,7 @@ void main() {
 
     test('current user is not null after register', () async {
       final authRepository = makeAuthRepository();
-      // addTearDown(authRepository.dispose);
+      addTearDown(authRepository.dispose);
       await authRepository.createUserWithEmailAndPassword(testEmail, testPassword);
       
       expect(authRepository.currentUser, testUser);
@@ -41,7 +43,7 @@ void main() {
 
     test('current user is null after sign out', () async {
       final authRepository = makeAuthRepository();
-      // addTearDown(authRepository.dispose);
+      addTearDown(authRepository.dispose);
 
       await authRepository.signInWithEmailAndPassword(testEmail, testPassword);
       expect(authRepository.authStateChanges(), emits(testUser));
@@ -55,7 +57,7 @@ void main() {
 
     test('current user is current user then null after sign out', () async {
       final authRepository = makeAuthRepository();
-      // addTearDown(authRepository.dispose);
+      addTearDown(authRepository.dispose);
       await authRepository.signInWithEmailAndPassword(testEmail, testPassword);
       
       expect(
@@ -67,15 +69,17 @@ void main() {
       expect(authRepository.currentUser, null);
     });
 
-      test('sign in after dispose throws error', () async {
-        final authRepository = makeAuthRepository();
-        authRepository.dispose();
+    test('sign in after dispose throws error', () async {
+      // initializes FakeAuthRepository instance using makeAuthRepository()
+      final authRepository = makeAuthRepository();
+      // calls the dispose method immediately at this point in the test
+      authRepository.dispose();
 
-        expect(
-          () => authRepository.signInWithEmailAndPassword(testEmail, testPassword),
-          throwsStateError);
+      expect(
+        () => authRepository.signInWithEmailAndPassword(testEmail, testPassword),
+        throwsStateError);
 
-        expect(authRepository.currentUser, null);
-      });
+      expect(authRepository.currentUser, null);
+    });
 
 }

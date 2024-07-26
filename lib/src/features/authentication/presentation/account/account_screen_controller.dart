@@ -6,7 +6,8 @@ class AccountScreenController extends StateNotifier<AsyncValue<void>>{
 
   final AuthRepository authRepository;
 
-  Future<bool> signOut() async {
+// Future<bool> is useful to update UI differently based on sucessful / failed sign out
+  // Future<bool> signOut() async {
     // try {
     //   state = const AsyncValue<void>.loading();
     //   await authRepository.signOut();
@@ -16,9 +17,14 @@ class AccountScreenController extends StateNotifier<AsyncValue<void>>{
     //   state = AsyncValue<void>.error(e, st);
     //   return false;
     // }
+    // state = const AsyncValue<void>.loading();
+    // state = await AsyncValue.guard(() => authRepository.signOut());
+    // return state.hasError == false;
+  // }
+
+  Future<void> signOut() async {
     state = const AsyncValue<void>.loading();
     state = await AsyncValue.guard(() => authRepository.signOut());
-    return state.hasError == false;
   }
 }
 
